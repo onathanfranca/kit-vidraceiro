@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maleta Digital do Vidraceiro — Apresente, meça e orce melhor pelo celular</title>
+<meta name="description" content="Receba a Maleta Digital do Vidraceiro com catálogos, projetos, checklist de medição, planilha de orçamento e scripts prontos para apresentar melhor e vender mais.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --radius: .875rem;
+    --background: oklch(18% .025 250);
+    --foreground: oklch(98% .005 250);
+    --card: oklch(23% .028 250);
+    --card-foreground: oklch(98% .005 250);
+    --muted: oklch(28% .025 250);
+    --muted-foreground: oklch(75% .02 250);
+    --primary: oklch(98% .005 250);
+    --primary-foreground: oklch(18% .025 250);
+    --accent: oklch(78% .15 220);
+    --accent-foreground: oklch(15% .03 250);
+    --success: oklch(72% .19 150);
+    --success-foreground: oklch(12% .03 150);
+    --danger: oklch(65% .22 25);
+    --border: oklch(100% 0 0/.1);
+    --input: oklch(100% 0 0/.12);
+    --ring: oklch(78% .15 220);
+    --gradient-bg: radial-gradient(ellipse at top, oklch(26% .05 230) 0%, oklch(16% .025 250) 60%);
+    --gradient-accent: linear-gradient(135deg, oklch(78% .15 220), oklch(65% .18 240));
+    --glass-bg: linear-gradient(180deg, oklch(100% 0 0/.06), oklch(100% 0 0/.02));
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter', system-ui, sans-serif;
+    background:var(--gradient-bg);
+    background-color:var(--background);
+    background-attachment:fixed;
+    color:var(--foreground);
+    line-height:1.55;
+    min-height:100vh;
+  }
+
+  .container{max-width:900px; margin:0 auto; padding:0 24px;}
+  .container-narrow{max-width:760px; margin:0 auto; padding:0 24px;}
+  section{padding:72px 0;}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 16px; border-radius:999px;
+    background:var(--glass-bg); border:1px solid var(--border);
+    font-size:13px; font-weight:600; color:var(--muted-foreground); letter-spacing:.02em;
+  }
+
+  .eyebrow{
+    display:block; font-size:13px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--accent); margin-bottom:12px;
+  }
+
+  h1{font-size:clamp(28px, 5vw, 42px); font-weight:900; line-height:1.15; letter-spacing:-.01em; margin:20px 0 20px;}
+  h2{font-size:clamp(24px, 4vw, 32px); font-weight:800; line-height:1.2; margin-bottom:12px;}
+  p{color:var(--muted-foreground); font-size:16px;}
+  .lead{font-size:18px; color:var(--muted-foreground); margin-bottom:28px;}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; max-width:420px; padding:18px 28px;
+    background:var(--primary); color:var(--primary-foreground);
+    font-size:17px; font-weight:800; border:none; border-radius:var(--radius);
+    cursor:pointer; text-decoration:none;
+    box-shadow:0 8px 34px -6px oklch(72% .19 150 / .45);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:0 12px 38px -6px oklch(72% .19 150 / .6);}
+  .btn:active{transform:translateY(0);}
+  .btn-wrap{display:flex; flex-direction:column; align-items:center; gap:14px; margin-top:8px;}
+  .trust-line{font-size:13px; color:var(--muted-foreground); text-align:center;}
+
+  .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:28px;}
+  .glass{background:var(--glass-bg); border:1px solid var(--border); border-radius:var(--radius); backdrop-filter:blur(12px);}
+
+  ul{list-style:none;}
+  li{display:flex; align-items:flex-start; gap:10px; margin-bottom:12px; font-size:15px; color:var(--foreground);}
+  li .icon{flex-shrink:0; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-top:1px;}
+  li.check .icon{background:oklch(72% .19 150 / .18); color:var(--success);}
+  li.cross .icon{background:oklch(65% .22 25 / .18); color:var(--danger);}
+
+  hr.divider{border:none; border-top:1px solid var(--border); margin:0;}
+  .section-head{text-align:center; margin-bottom:8px;}
+  .footer-tag{text-align:center; font-size:13px; color:var(--muted-foreground); padding:32px 0;}
+
+  /* ---------- Header ---------- */
+  header{padding:28px 0;}
+  .logo-row{display:flex; align-items:center; justify-content:center; gap:10px;}
+  .logo-row img{width:32px; height:32px; border-radius:8px;}
+  .logo{font-weight:800; font-size:16px; letter-spacing:-.01em;}
+
+  /* ---------- Hero ---------- */
+  .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center; padding-top:16px;}
+  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr; text-align:center;} }
+  .hero-grid .checklist-hero{text-align:left; max-width:460px;}
+  @media (max-width:900px){ .hero-grid .checklist-hero{margin:0 auto;} }
+  .hero-img{border-radius:var(--radius); overflow:hidden; border:1px solid var(--border); box-shadow:0 20px 60px -20px rgba(0,0,0,.6);}
+  .hero-img img{width:100%; display:block;}
+  .hero-note{max-width:520px; margin:24px 0 32px; padding:16px 20px; font-size:14px; color:var(--muted-foreground); font-style:italic;}
+  @media (max-width:900px){ .hero-note{margin-left:auto; margin-right:auto;} }
+
+  /* ---------- Problem section ---------- */
+  .problem-list{max-width:480px; margin:20px auto 24px; text-align:left;}
+  .closing-line{text-align:center; font-weight:700; font-size:18px; margin-top:16px; color:var(--foreground);}
+
+  /* ---------- Antes/depois ---------- */
+  .compare-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:32px;}
+  @media (max-width:640px){ .compare-grid{grid-template-columns:1fr;} }
+  .compare-card h3{font-size:16px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; gap:8px;}
+  .compare-card.bad{border-color:oklch(65% .22 25 / .3);}
+  .compare-card.good{border-color:oklch(72% .19 150 / .35); background:linear-gradient(180deg, oklch(72% .19 150 / .08), var(--card));}
+
+  /* ---------- Método (etapas) ---------- */
+  .steps-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:32px;}
+  @media (max-width:768px){ .steps-grid{grid-template-columns:1fr;} }
+  .step-card .step-num{font-size:12px; font-weight:800; color:var(--accent); letter-spacing:.06em; margin-bottom:10px;}
+  .step-card h3{font-size:19px; font-weight:800; margin-bottom:10px;}
+  .method-tagline{text-align:center; font-weight:700; font-size:18px; margin-top:32px;}
+  .method-tagline .hl{color:var(--accent);}
+
+  /* ---------- Para quem / o que vem dentro ---------- */
+  .who-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:28px;}
+  @media (max-width:640px){ .who-grid{grid-template-columns:1fr;} }
+  .who-grid h3{font-size:15px; font-weight:700; margin-bottom:16px;}
+
+  .items-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:32px;}
+  @media (max-width:640px){ .items-grid{grid-template-columns:1fr;} }
+  .item-card{overflow:hidden; padding:0;}
+  .item-card img{width:100%; display:block; aspect-ratio:4/3.3; object-fit:cover; background:var(--muted);}
+  .item-card .item-body{padding:24px;}
+  .item-tag{font-size:12px; font-weight:800; color:var(--accent); letter-spacing:.06em; margin-bottom:8px; display:block;}
+  .item-card h3{font-size:17px; font-weight:800; margin-bottom:8px;}
+  .item-card p{font-size:14px;}
+
+  /* ---------- Bônus ---------- */
+  .bonus-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:32px;}
+  @media (max-width:640px){ .bonus-grid{grid-template-columns:1fr;} }
+  .bonus-tag{font-size:12px; font-weight:800; color:var(--success); letter-spacing:.06em; margin-bottom:8px; display:block;}
+  .bonus-card h3{font-size:16px; font-weight:800; margin-bottom:8px;}
+  .bonus-card p{font-size:14px;}
+
+  /* ---------- Na prática ---------- */
+  .use-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:32px;}
+  @media (max-width:768px){ .use-grid{grid-template-columns:1fr;} }
+  .use-card .use-tag{font-size:12px; font-weight:800; color:var(--accent); letter-spacing:.06em; margin-bottom:10px; display:block;}
+  .use-card h3{font-size:16px; font-weight:800; margin-bottom:10px;}
+  .use-card p{font-size:14px;}
+  .use-img{margin-top:32px; border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);}
+  .use-img img{width:100%; display:block;}
+
+  /* ---------- Crenças ---------- */
+  .belief-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:32px;}
+  @media (max-width:768px){ .belief-grid{grid-template-columns:1fr;} }
+  .belief-card .tag-bad{font-size:12px; font-weight:800; color:var(--danger); letter-spacing:.06em; margin-bottom:10px; display:block;}
+  .belief-card .belief-quote{font-size:17px; font-weight:700; margin-bottom:16px;}
+  .belief-card hr{border:none; border-top:1px solid var(--border); margin-bottom:16px;}
+  .belief-card .tag-good{font-size:12px; font-weight:800; color:var(--success); letter-spacing:.06em; margin-bottom:8px; display:block;}
+  .belief-card p{font-size:14px;}
+
+  /* ---------- Oferta / preço ---------- */
+  .offer-card{max-width:640px; margin:32px auto 0; padding:36px;}
+  .offer-card > p.lead{text-align:center; margin-bottom:24px;}
+  .offer-subtag{font-size:13px; font-weight:800; color:var(--accent); letter-spacing:.06em; margin-bottom:14px; display:block;}
+  .offer-list{display:grid; grid-template-columns:1fr 1fr; gap:0 20px; margin-bottom:20px;}
+  @media (max-width:560px){ .offer-list{grid-template-columns:1fr;} }
+  .offer-total{text-align:center; font-weight:800; font-size:19px; margin:24px 0;}
+  .think-box{border:1px dashed var(--border); border-radius:var(--radius); padding:18px 20px; font-size:14px; margin-bottom:28px;}
+  .price-block{text-align:center; margin-bottom:24px;}
+  .price-was{font-size:15px; color:var(--muted-foreground);}
+  .price-was s{color:var(--muted-foreground);}
+  .price-label{font-size:13px; font-weight:700; letter-spacing:.1em; color:var(--muted-foreground); margin:6px 0;}
+  .price-now{font-size:56px; font-weight:900; color:var(--accent); line-height:1;}
+  .price-sub{font-size:14px; margin-top:8px;}
+  .value-note{background:oklch(72% .19 150 / .1); border:1px solid oklch(72% .19 150 / .3); border-radius:var(--radius); padding:16px 20px; font-size:14px; margin-bottom:28px; display:flex; gap:10px;}
+
+  /* ---------- Garantia ---------- */
+  .guarantee-grid{display:grid; grid-template-columns:auto 1fr; gap:36px; align-items:center; margin-top:32px;}
+  @media (max-width:640px){ .guarantee-grid{grid-template-columns:1fr; text-align:center; justify-items:center;} }
+  .guarantee-grid img{width:150px; height:150px; flex-shrink:0;}
+
+  /* ---------- FAQ ---------- */
+  .faq-item{border-bottom:1px solid var(--border);}
+  .faq-item:last-child{border-bottom:none;}
+  .faq-q{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
+    background:none; border:none; color:var(--foreground); font-family:inherit;
+    font-size:16px; font-weight:700; text-align:left; padding:20px 4px; cursor:pointer;
+  }
+  .faq-q .plus{
+    flex-shrink:0; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; background:var(--glass-bg); border:1px solid var(--border);
+    font-size:16px; transition:transform .2s ease;
+  }
+  .faq-item.open .faq-q .plus{transform:rotate(45deg); color:var(--accent);}
+  .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+  .faq-a p{padding:0 4px 20px; font-size:15px;}
+
+  .final-cta{text-align:center;}
+  .final-cta .lead{max-width:560px; margin-left:auto; margin-right:auto;}
+
+  @media (max-width:640px){ section{padding:52px 0;} }
+  /* ---------- Cena de WhatsApp ---------- */
+  .chat-scene{max-width:420px; margin:0 auto 40px; background:oklch(15% .02 250); border:1px solid var(--border); border-radius:var(--radius); padding:20px;}
+  .chat-bubble{max-width:78%; padding:10px 14px; border-radius:14px; font-size:14px; margin-bottom:8px; line-height:1.4;}
+  .chat-bubble.sent{background:oklch(30% .03 250); color:var(--foreground); margin-left:auto; border-bottom-right-radius:4px;}
+  .chat-bubble.received{background:oklch(24% .025 250); color:var(--muted-foreground); margin-right:auto; border-bottom-left-radius:4px;}
+  .chat-status{text-align:center; font-size:12px; color:var(--danger); font-weight:700; margin-top:14px; letter-spacing:.02em;}
+
+  /* ---------- Value stack ---------- */
+  .value-stack{margin:24px 0; border-top:1px solid var(--border); padding-top:20px;}
+  .value-row{display:flex; align-items:baseline; gap:8px; font-size:14px; margin-bottom:10px; color:var(--foreground);}
+  .value-row .vname{white-space:nowrap;}
+  .value-row .vdots{flex:1; border-bottom:1px dotted var(--border); transform:translateY(-4px);}
+  .value-row .vprice{white-space:nowrap; color:var(--muted-foreground);}
+  .value-row.total{border-top:1px solid var(--border); padding-top:14px; margin-top:14px; font-weight:800; font-size:16px; color:var(--foreground);}
+  .value-row.total .vprice{color:var(--foreground); text-decoration:line-through; text-decoration-color:var(--danger);}
+
+  /* ---------- Autoridade ---------- */
+  .authority-line{text-align:center; font-size:14px; color:var(--muted-foreground); font-style:italic; margin-top:20px;}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-row">
+    <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/ea2e47bc-2879-41a4-a7b9-3d17d5c0f222/logo-sm.webp" alt="Maleta do Vidraceiro">
+    <span class="logo">Maleta do Vidraceiro</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="badge">Material 100% digital</span>
+        <h1>Vidraceiro, pare de mandar <span style="color:var(--accent)">preço seco no WhatsApp</span> e perder cliente para concorrente barato</h1>
+        <p class="lead">Receba a Maleta Digital do Vidraceiro com catálogos, projetos, checklist de medição, planilha de orçamento e scripts prontos para apresentar melhor, orçar com mais segurança e mostrar valor antes do preço.</p>
+        <p style="font-weight:700; color:var(--accent); margin-bottom:24px;">Receba tudo pelo E-MAIL após a compra.</p>
+
+        <ul class="checklist-hero">
+          <li class="check"><span class="icon">✓</span> Catálogo pronto para enviar no WhatsApp</li>
+          <li class="check"><span class="icon">✓</span> Modelos de box, portas, janelas, sacadas e guarda-corpo</li>
+          <li class="check"><span class="icon">✓</span> Checklist para evitar erro de medição</li>
+          <li class="check"><span class="icon">✓</span> Planilha simples para organizar preço e lucro</li>
+          <li class="check"><span class="icon">✓</span> Material leve para abrir direto no celular</li>
+        </ul>
+
+        <div class="hero-note glass">
+          Não é curso. Não é apostila teórica. É uma ferramenta digital pronta para usar no celular, na obra e no WhatsApp.
+        </div>
+
+        <div class="btn-wrap" style="align-items:flex-start;">
+          <a href="https://pay.wiapy.com/RDIsKbYp1zc6" class="btn" target="_blank" rel="noopener">Quero receber minha Maleta Digital →</a>
+          <span class="trust-line">Acesso imediato • Abre no celular • Garantia de 7 dias • Pagamento único</span>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/85cf1b4d-c507-4a88-bba6-166c28ad02f8/hero-lcp.webp" alt="Vidraceiro segurando o celular com a Maleta Digital aberta — catálogo, checklist e planilha.">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">O problema real</span>
+      <h2>O problema não é só o seu preço. <span style="color:var(--accent)">É como o cliente enxerga seu serviço antes do preço.</span></h2>
+    </div>
+
+    <div class="chat-scene">
+      <div class="chat-bubble sent">Box banheiro, R$ 650.</div>
+      <div class="chat-bubble received">Vou ver com outro daqui e te falo 👍</div>
+      <div class="chat-status">● Cliente não respondeu mais</div>
+    </div>
+
+    <div class="compare-grid" style="align-items:stretch;">
+      <div class="card">
+        <p style="margin-bottom:20px;">Quando você manda apenas <strong style="color:var(--foreground)">“fica R$ X”</strong>, o cliente compara você com qualquer concorrente.</p>
+        <ul class="problem-list" style="margin:0 0 20px; max-width:none;">
+          <li class="cross"><span class="icon">✕</span> Ele não viu acabamento.</li>
+          <li class="cross"><span class="icon">✕</span> Não viu organização.</li>
+          <li class="cross"><span class="icon">✕</span> Não viu opções.</li>
+          <li class="cross"><span class="icon">✕</span> Não viu segurança.</li>
+          <li class="cross"><span class="icon">✕</span> Não viu diferença.</li>
+        </ul>
+        <p style="margin:0;">Então ele faz o mais óbvio: pede desconto, some no WhatsApp ou fecha com quem cobrou menos.</p>
+      </div>
+      <div class="card" style="display:flex; align-items:center; justify-content:center; text-align:center;">
+        <p style="font-weight:800; font-size:19px; color:var(--foreground); margin:0;">O cliente só compara preço quando <span style="color:var(--accent)">não consegue enxergar valor.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANTES E DEPOIS -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">Antes e depois</span>
+      <h2>Veja a diferença entre vender no improviso e vender com estrutura</h2>
+    </div>
+
+    <div class="compare-grid">
+      <div class="card compare-card bad">
+        <h3>❌ No improviso</h3>
+        <ul>
+          <li class="cross"><span class="icon">✕</span> Manda preço seco no WhatsApp</li>
+          <li class="cross"><span class="icon">✕</span> Procura foto perdida na galeria</li>
+          <li class="cross"><span class="icon">✕</span> Calcula no chute</li>
+          <li class="cross"><span class="icon">✕</span> Esquece custo de deslocamento e acessórios</li>
+          <li class="cross"><span class="icon">✕</span> Não sabe responder desconto</li>
+          <li class="cross"><span class="icon">✕</span> Cliente some ou compara só preço</li>
+        </ul>
+      </div>
+      <div class="card compare-card good">
+        <h3>✅ Com a Maleta Digital</h3>
+        <ul>
+          <li class="check"><span class="icon">✓</span> Mostra modelos prontos</li>
+          <li class="check"><span class="icon">✓</span> Envia uma apresentação mais profissional</li>
+          <li class="check"><span class="icon">✓</span> Consulta checklist de medição</li>
+          <li class="check"><span class="icon">✓</span> Usa planilha para organizar preço</li>
+          <li class="check"><span class="icon">✓</span> Responde objeções com mensagens prontas</li>
+          <li class="check"><span class="icon">✓</span> Cliente entende valor antes de negociar</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MÉTODO -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">O método</span>
+      <h2>Conheça o método simples: <span style="color:var(--accent)">Valor Antes do Preço</span></h2>
+      <p class="lead">A Maleta Digital do Vidraceiro foi organizada para ajudar você a seguir uma ordem simples antes de mandar o valor para o cliente.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="card step-card">
+        <span class="step-num">ETAPA 01</span>
+        <h3>Mostre</h3>
+        <p>Use o catálogo e os projetos para o cliente visualizar o resultado antes de perguntar preço.</p>
+      </div>
+      <div class="card step-card">
+        <span class="step-num">ETAPA 02</span>
+        <h3>Confira</h3>
+        <p>Use o checklist de medição para reduzir esquecimento, erro de folga, prumada e esquadro.</p>
+      </div>
+      <div class="card step-card">
+        <span class="step-num">ETAPA 03</span>
+        <h3>Orce</h3>
+        <p>Use a planilha, o guia e os scripts para apresentar o valor com mais clareza e segurança.</p>
+      </div>
+    </div>
+
+    <p class="method-tagline">Antes de falar quanto custa, <span class="hl">mostre por que o seu serviço vale.</span></p>
+  </div>
+</section>
+
+<!-- PARA QUEM (curto) -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">Para você</span>
+      <h2>Essa Maleta foi feita para você que…</h2>
+    </div>
+
+    <div class="card who-grid" style="grid-column:span 2; display:grid;">
+      <ul>
+        <li class="check"><span class="icon">✓</span> Trabalha com box, portas, janelas, sacadas, espelhos ou guarda-corpo</li>
+        <li class="check"><span class="icon">✓</span> Sabe instalar, mas sente dificuldade na hora de vender e cobrar</li>
+        <li class="check"><span class="icon">✓</span> Já ficou procurando foto antiga na galeria para mostrar modelo</li>
+        <li class="check"><span class="icon">✓</span> Quer organizar melhor medição, apresentação e orçamento</li>
+      </ul>
+      <ul>
+        <li class="check"><span class="icon">✓</span> Atende clientes pelo WhatsApp</li>
+        <li class="check"><span class="icon">✓</span> Perde cliente depois de enviar orçamento</li>
+        <li class="check"><span class="icon">✓</span> Quer parecer mais profissional mesmo trabalhando sozinho</li>
+        <li class="check"><span class="icon">✓</span> Está cansado de disputar só no preço</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- O QUE VEM DENTRO -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">O que vem dentro</span>
+      <h2>O que vem dentro da Maleta Digital do Vidraceiro</h2>
+    </div>
+
+    <div class="items-grid">
+      <div class="card item-card">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/fddacc93-d178-4c5e-9462-d9d6e52b2890/catalogo-whatsapp.webp" alt="Tela de celular com catálogo de vidraçaria mostrando box, sacada e espelhos.">
+        <div class="item-body">
+          <span class="item-tag">ITEM 01</span>
+          <h3>Catálogo Profissional para WhatsApp</h3>
+          <p>Modelos prontos de box, portas, janelas, sacadas, guarda-corpo, divisórias, fachadas, espelhos e vidro com LED para mostrar ao cliente.</p>
+        </div>
+      </div>
+      <div class="card item-card">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/495589c5-c5c6-4300-9d54-235a15618fd5/projetos-vidro.webp" alt="Tablet com vários projetos de vidro organizados em grade.">
+        <div class="item-body">
+          <span class="item-tag">ITEM 02</span>
+          <h3>Projetos Prontos de Vidraçaria e Esquadrias</h3>
+          <p>Referências visuais para apresentar opções ao cliente e ajudar na decisão antes do orçamento.</p>
+        </div>
+      </div>
+      <div class="card item-card">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/1486637e-107b-4072-9fe6-044758883fc1/checklist-medicao.webp" alt="Celular mostrando checklist de medição com vão, prumada e esquadro.">
+        <div class="item-body">
+          <span class="item-tag">ITEM 03</span>
+          <h3>Checklist de Medição Sem Erro</h3>
+          <p>Conferência de vão, prumada, esquadro, folga, transpasse e pontos de atenção antes de mandar para a têmpera.</p>
+        </div>
+      </div>
+      <div class="card item-card">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/d25c8456-63a8-4224-900b-1651d513965d/planilha-orcamento.webp" alt="Celular mostrando planilha de orçamento com material, mão de obra e preço final.">
+        <div class="item-body">
+          <span class="item-tag">ITEM 04</span>
+          <h3>Planilha de Orçamento e Precificação</h3>
+          <p>Ajuda para organizar custo, mão de obra, deslocamento, acessórios, margem e preço sugerido.</p>
+        </div>
+      </div>
+      <div class="card item-card">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/864596f5-f621-42a7-b3d8-5cb499b644b3/guia-cobrar.webp" alt="Celular mostrando guia de quanto cobrar por box, espelho, janela e porta.">
+        <div class="item-body">
+          <span class="item-tag">ITEM 05</span>
+          <h3>Guia de Quanto Cobrar</h3>
+          <p>Referências práticas de faixa de preço — box R$ 450–890, espelho R$ 180–650, janela R$ 700–1.900 e mais — pra você nunca mais chutar valor na hora de orçar.</p>
+        </div>
+      </div>
+      <div class="card item-card">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/250907a2-f6d8-46e0-a921-d0a9a3b03292/scripts-whatsapp.webp" alt="Celular mostrando conversa de WhatsApp com scripts de atendimento.">
+        <div class="item-body">
+          <span class="item-tag">ITEM 06</span>
+          <h3>Scripts de WhatsApp</h3>
+          <p>Mensagens prontas para responder cliente, enviar orçamento, fazer follow-up, lidar com desconto e retomar cliente que sumiu.</p>
+        </div>
+      </div>
+      <div class="card item-card" style="grid-column: span 1;">
+        <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/bfdae430-7073-4ea2-99be-0716b2bbf50e/proposta-simples.webp" alt="Celular mostrando modelo de proposta simples com serviço, prazo e valor.">
+        <div class="item-body">
+          <span class="item-tag">ITEM 07</span>
+          <h3>Modelo de Proposta Simples</h3>
+          <p>Para enviar orçamento com mais clareza, organização e aparência profissional.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-wrap" style="margin-top:40px;">
+      <a href="https://pay.wiapy.com/RDIsKbYp1zc6" class="btn" target="_blank" rel="noopener">Quero esses 7 materiais agora →</a>
+    </div>
+  </div>
+</section>
+
+<!-- BÔNUS -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Bônus inclusos</span>
+      <h2>Além da Maleta principal, você também recebe estes bônus</h2>
+    </div>
+
+    <div class="bonus-grid">
+      <div class="card bonus-card">
+        <span class="bonus-tag">BÔNUS 1</span>
+        <h3>Catálogo Premium de Espelhos com LED</h3>
+        <p>Modelos modernos para apresentar serviços de maior valor percebido.</p>
+      </div>
+      <div class="card bonus-card">
+        <span class="bonus-tag">BÔNUS 2</span>
+        <h3>Checklist de Visita Técnica</h3>
+        <p>Para não esquecer pontos importantes na hora de medir e conversar com o cliente.</p>
+      </div>
+      <div class="card bonus-card">
+        <span class="bonus-tag">BÔNUS 3</span>
+        <h3>Mensagens para Cliente que Pede Desconto</h3>
+        <p>Respostas prontas para defender seu preço sem parecer grosso ou desesperado.</p>
+      </div>
+      <div class="card bonus-card">
+        <span class="bonus-tag">BÔNUS 4</span>
+        <h3>Guia de Serviços de Alto Valor</h3>
+        <p>Ideias e referências para sacadas, guarda-corpo, fachadas, espelhos grandes e projetos mais lucrativos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NA PRÁTICA -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Na prática</span>
+      <h2>Veja como você pode usar na prática</h2>
+    </div>
+
+    <div class="use-grid">
+      <div class="card use-card">
+        <span class="use-tag">USO 1</span>
+        <h3>Quando o cliente pedir modelo</h3>
+        <p>Você abre o catálogo no celular e mostra opções organizadas, sem perder tempo procurando foto velha na galeria.</p>
+      </div>
+      <div class="card use-card">
+        <span class="use-tag">USO 2</span>
+        <h3>Antes de mandar para a têmpera</h3>
+        <p>Você consulta o checklist e confere os principais pontos de medição para evitar erro por pressa ou esquecimento.</p>
+      </div>
+      <div class="card use-card">
+        <span class="use-tag">USO 3</span>
+        <h3>Na hora de passar o orçamento</h3>
+        <p>Você usa a planilha, o guia e os scripts para apresentar o valor com mais profissionalismo.</p>
+      </div>
+    </div>
+
+    <div class="use-img">
+      <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/6d9e4165-04a6-4c8b-8463-ad88204bc18b/montagem-3-telas.webp" alt="Três celulares lado a lado mostrando catálogo de vidros, checklist de medição e planilha de orçamento, sobre bancada de vidraçaria.">
+    </div>
+  </div>
+</section>
+
+<p class="footer-tag">Maleta Digital do Vidraceiro • Material digital • Pagamento único • Garantia de 7 dias</p>
+<div class="container-narrow"><hr class="divider"></div>
+
+<!-- QUEBRA DE CRENÇAS -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Quebra de crenças</span>
+      <h2>Talvez você não esteja perdendo venda por ser caro. Talvez esteja perdendo porque o cliente não viu diferença.</h2>
+    </div>
+
+    <div class="belief-grid">
+      <div class="card belief-card">
+        <span class="tag-bad">CRENÇA</span>
+        <p class="belief-quote">“Meu cliente só quer o mais barato.”</p>
+        <hr>
+        <span class="tag-good">A VERDADE</span>
+        <p>Ele quer o mais barato quando todas as propostas parecem iguais.</p>
+      </div>
+      <div class="card belief-card">
+        <span class="tag-bad">CRENÇA</span>
+        <p class="belief-quote">“Foto no celular já resolve.”</p>
+        <hr>
+        <span class="tag-good">A VERDADE</span>
+        <p>Foto bagunçada não vende serviço de alto valor. Apresentação organizada passa confiança.</p>
+      </div>
+      <div class="card belief-card">
+        <span class="tag-bad">CRENÇA</span>
+        <p class="belief-quote">“Eu faço o cálculo de cabeça.”</p>
+        <hr>
+        <span class="tag-good">A VERDADE</span>
+        <p>Cálculo de cabeça no meio da correria pode esconder custo, margem e prejuízo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFERTA / PREÇO -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">A oferta</span>
+      <h2>Receba hoje a Maleta Digital do Vidraceiro</h2>
+    </div>
+    <p class="lead" style="text-align:center; max-width:520px; margin:0 auto 8px;">Uma ferramenta digital prática para ajudar você a apresentar, medir, orçar e vender melhor seus serviços de vidro pelo celular.</p>
+
+    <div class="card offer-card">
+      <span class="offer-subtag">VOCÊ RECEBE HOJE:</span>
+      <div class="offer-list">
+        <ul>
+          <li class="check"><span class="icon">✓</span> Catálogo Profissional para WhatsApp</li>
+          <li class="check"><span class="icon">✓</span> Checklist de Medição Sem Erro</li>
+          <li class="check"><span class="icon">✓</span> Guia de Quanto Cobrar</li>
+          <li class="check"><span class="icon">✓</span> Modelo de Proposta Simples</li>
+        </ul>
+        <ul>
+          <li class="check"><span class="icon">✓</span> Projetos Prontos de Vidraçaria e Esquadrias</li>
+          <li class="check"><span class="icon">✓</span> Planilha de Orçamento e Precificação</li>
+          <li class="check"><span class="icon">✓</span> Scripts de Atendimento no WhatsApp</li>
+        </ul>
+      </div>
+
+      <span class="offer-subtag" style="color:var(--success);">🎁 BÔNUS INCLUSOS:</span>
+      <div class="offer-list">
+        <ul>
+          <li class="check"><span class="icon">✓</span> Catálogo Premium de Espelhos com LED</li>
+          <li class="check"><span class="icon">✓</span> Mensagens para Cliente que Pede Desconto</li>
+        </ul>
+        <ul>
+          <li class="check"><span class="icon">✓</span> Checklist de Visita Técnica</li>
+          <li class="check"><span class="icon">✓</span> Guia de Serviços de Alto Valor</li>
+        </ul>
+      </div>
+
+      <div class="value-stack">
+        <div class="value-row"><span class="vname">Catálogo Profissional para WhatsApp</span><span class="vdots"></span><span class="vprice">R$ 20</span></div>
+        <div class="value-row"><span class="vname">Projetos Prontos de Vidraçaria</span><span class="vdots"></span><span class="vprice">R$ 18</span></div>
+        <div class="value-row"><span class="vname">Planilha de Orçamento e Precificação</span><span class="vdots"></span><span class="vprice">R$ 16</span></div>
+        <div class="value-row"><span class="vname">Checklist de Medição Sem Erro</span><span class="vdots"></span><span class="vprice">R$ 15</span></div>
+        <div class="value-row"><span class="vname">Guia de Quanto Cobrar</span><span class="vdots"></span><span class="vprice">R$ 12</span></div>
+        <div class="value-row"><span class="vname">Scripts de Atendimento no WhatsApp</span><span class="vdots"></span><span class="vprice">R$ 10</span></div>
+        <div class="value-row"><span class="vname">Modelo de Proposta Simples</span><span class="vdots"></span><span class="vprice">R$ 6</span></div>
+        <div class="value-row total"><span class="vname">Valor total</span><span class="vdots"></span><span class="vprice">R$ 97</span></div>
+      </div>
+
+      <div class="think-box">
+        <strong style="color:var(--foreground)">Pense assim:</strong> um único erro de medida pode custar centenas de reais. A Maleta Digital custa menos que o prejuízo de uma visita mal feita ou de uma peça pedida errada.
+      </div>
+
+      <div class="price-block">
+        <div class="price-was">De <s>R$ 97</s></div>
+        <div class="price-label">POR APENAS</div>
+        <div class="price-now">R$ 17</div>
+        <div class="price-sub">Pagamento único. Receba o material digital para usar no celular.</div>
+      </div>
+
+      <div class="value-note">
+        <span>✓</span>
+        <span>Menos que um tubo de silicone. Menos que uma visita perdida. Menos que o prejuízo de uma medida mal conferida.</span>
+      </div>
+
+      <div class="btn-wrap">
+        <a href="https://pay.wiapy.com/RDIsKbYp1zc6" class="btn" target="_blank" rel="noopener">Receber agora por R$ 17 →</a>
+        <span class="trust-line">Acesso imediato • Abre no celular • Garantia de 7 dias • Pagamento único</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GARANTIA -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">Garantia</span>
+      <h2>Garantia simples de 7 dias</h2>
+    </div>
+    <div class="guarantee-grid">
+      <img src="https://maletadovidraceiro.lovable.app/__l5e/assets-v1/a025d8ef-5d04-47e0-b37a-27386f9e090c/selo-garantia-round.webp" alt="Selo de 7 dias de garantia, satisfação garantida.">
+      <div>
+        <p style="margin-bottom:12px;">Receba o material, abra no celular e veja se ele faz sentido para a sua rotina.</p>
+        <p>Se você sentir que a Maleta Digital não é prática para apresentar, medir, orçar ou organizar seus atendimentos, você pode pedir reembolso dentro de 7 dias.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA QUEM É / NÃO É -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">Antes de comprar</span>
+      <h2>Para quem é e para quem não é</h2>
+    </div>
+
+    <div class="who-grid">
+      <div class="card">
+        <h3>É para você se…</h3>
+        <ul>
+          <li class="check"><span class="icon">✓</span> Você trabalha com vidraçaria ou esquadrias</li>
+          <li class="check"><span class="icon">✓</span> Você atende clientes pelo WhatsApp</li>
+          <li class="check"><span class="icon">✓</span> Você quer parar de mandar orçamento seco</li>
+          <li class="check"><span class="icon">✓</span> Você quer apresentar modelos com mais profissionalismo</li>
+          <li class="check"><span class="icon">✓</span> Você quer organizar melhor medição, preço e atendimento</li>
+          <li class="check"><span class="icon">✓</span> Você quer uma ferramenta prática para usar no celular</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Não é para você se…</h3>
+        <ul>
+          <li class="cross"><span class="icon">✕</span> Você está procurando promessa de dinheiro fácil</li>
+          <li class="cross"><span class="icon">✕</span> Você quer um curso longo com aulas teóricas</li>
+          <li class="cross"><span class="icon">✕</span> Você não pretende usar material digital no atendimento</li>
+          <li class="cross"><span class="icon">✕</span> Você quer continuar vendendo no improviso</li>
+          <li class="cross"><span class="icon">✕</span> Você espera que a ferramenta faça o trabalho sem aplicar nada</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="container-narrow">
+    <div class="section-head">
+      <span class="eyebrow">Tire suas dúvidas</span>
+      <h2>Dúvidas frequentes</h2>
+    </div>
+
+    <div class="card" style="margin-top:28px; padding:8px 20px;">
+      <div class="faq-item open">
+        <button class="faq-q">Como recebo o material? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Após a confirmação do pagamento, você recebe o material digital para abrir no celular.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Preciso de computador? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Não. A ideia é usar direto pelo celular.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">É curso? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Não. É uma maleta digital com materiais prontos de consulta, apresentação, medição, orçamento e atendimento.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Serve para quem trabalha sozinho? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Sim. A oferta foi pensada principalmente para vidraceiro autônomo e pequeno dono de vidraçaria.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Posso usar com meus clientes no WhatsApp? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Sim. O foco é justamente ajudar na apresentação e no atendimento pelo WhatsApp.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Tem garantia? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Sim. Você tem 7 dias de garantia.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">É material físico? <span class="plus">+</span></button>
+        <div class="faq-a"><p>Não. É material digital para receber e usar no celular.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="final-cta">
+  <div class="container-narrow">
+    <span class="eyebrow">Última chamada</span>
+    <h2>Você vai continuar mandando preço seco <span style="color:var(--accent)">ou vai começar a mostrar valor antes do preço?</span></h2>
+    <p class="lead">Se o cliente só compara preço quando não entende a diferença, por que continuar apresentando seu serviço do mesmo jeito que o concorrente barato?</p>
+    <p class="authority-line">Feito por quem também vive o corre de medir, orçar e atender cliente pelo WhatsApp no dia a dia da vidraçaria.</p>
+
+    <div class="btn-wrap">
+      <a href="https://pay.wiapy.com/RDIsKbYp1zc6" class="btn" target="_blank" rel="noopener">Quero minha Maleta Digital →</a>
+      <span class="trust-line">Acesso imediato • Pagamento único de R$ 17 • Garantia de 7 dias</span>
+    </div>
+  </div>
+</section>
+
+<p class="footer-tag">Maleta Digital do Vidraceiro • Material digital • Pagamento único • Garantia de 7 dias</p>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    if(item.classList.contains('open')){ a.style.maxHeight = a.scrollHeight + 'px'; }
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(other => {
+        other.classList.remove('open');
+        other.querySelector('.faq-a').style.maxHeight = null;
+      });
+      if(!isOpen){
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
